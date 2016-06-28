@@ -1,115 +1,110 @@
 /**
- * Created by Aaron on 6/26/2016.
+ * Created by Aaron on 6/27/2016.
  */
+
 import {once} from 'lodash';
 import {EventEmitter} from 'events';
 import {ok as assert, strictEqual} from 'assert';
 
-export default class EventPropagator extends EventEmitter {
-    static instanceCounter = 0;
+function isPropagatingTo( source, target, event ) {
+    assert( source instanceof EventEmitter, 'emitter must be an instance of EventEmitter' );
+    assert( target instanceof EventEmitter, 'emitter must be an instance of EventEmitter' );
 
-    _instance = 0;
+    strictEqual( typeof event, 'string', 'event must be a string' );
 
-    constructor( propagateEvents = false ) {
-        super();
-
-        this._propagateEvents = !!propagateEvents;
-    }
-
-    propagateEvents( enable = true ) {
-        if( enable !== this._propagateEvents ) {
-            this.reInstance();
+    for( let listener of source.listeners( event ) ) {
+        if( listener.__target__ === target && listener.__active__ ) {
+            return true;
         }
-
-        this._propagateEvents = enable;
     }
 
-    reInstance() {
-        this._instance = ++EventPropagator.instanceCounter;
-    }
+    return false;
+}
 
-    isPropagatingFrom( emitter, event ) {
-        for( let listener of emitter.listeners( event ) ) {
-            if( listener.__target__ === this ) {
-                return true;
-            }
-        }
+function propagateTo( source, target, event, onEvent = () => true, onlyOnce = false, context ) {
+    strictEqual( typeof onEvent, 'function', 'onEvent must be a function' );
 
-        return false;
-    }
+    if( !isPropagatingTo( source, target, event ) ) {
+        var listener;
 
-    propagateFrom( emitter, event, options = {} ) {
-        assert( emitter instanceof EventEmitter, 'emitter must be an EventEmitter instance.' );
-        strictEqual( typeof event, 'string', 'event must be a string' );
+        if( onlyOnce ) {
+            listener = once( ( ...args ) => {
+                if( listener.__active__ ) {
+                    let res = onEvent.apply( context, args );
 
-        const {
-                  onlyOnce = false,
-                  handler = () => true,
-                  instance = true
-              } = options;
-
-        if( this._propagateEvents && !this.isPropagatingFrom( emitter, event ) ) {
-            var propagate;
-
-            if( onlyOnce ) {
-                propagate = once( ( ...args ) => {
-                    if( !propagate._hasPropagated && this._propagateEvents &&
-                        (!instance || this._instance === propagate.__instance__ ) ) {
-
-                        let res = handler.apply( this, args );
-
-                        if( res !== false ) {
-                            this.emit( event, ...args );
-                        }
-
-                        propagate._hasPropagated = true;
+                    if( res !== false ) {
+                        target.emit( event, ...args );
                     }
 
-                    emitter.removeListener( event, propagate );
-                } );
+                    listener.__active__ = false;
+                }
 
-                propagate._hasPropagated = false;
+                target.removeListener( event, listener );
+            } );
 
-            } else {
-                propagate = ( ...args ) => {
-                    if( instance && this._instance !== propagate.__instance__ ) {
-                        emitter.removeListener( event, propagate );
+        } else {
+            listener = ( ...args ) => {
+                if( listener.__active__ ) {
+                    let res = onEvent.apply( context, args );
 
-                        return;
-                    }
-
-                    if( this._propagateEvents ) {
-                        let res = handler.apply( this, args );
-
-                        if( res !== false ) {
-                            this.emit( event, ...args );
-                        }
+                    if( res !== false ) {
+                        target.emit( event, ...args );
                     }
                 }
-            }
+            };
+        }
 
-            propagate.__target__   = this;
-            propagate.__instance__ = this._instance;
+        listener.__target__ = target;
+        listener.__source__ = target;
+        listener.__active__ = true;
 
-            emitter.on( event, propagate );
+        target.addListener( event, listener );
+    }
+}
+
+function stopPropagatingTo( source, target, event ) {
+    assert( source instanceof EventEmitter, 'emitter must be an EventEmitter' );
+    assert( target instanceof EventEmitter, 'emitter must be an EventEmitter' );
+
+    strictEqual( typeof event, 'string', 'event must be a string' );
+
+    for( let listener of source.listeners( event ) ) {
+        if( listener.__target__ === target && listener.__source__ === source ) {
+            source.removeListener( listener );
         }
     }
+}
 
-    /*
-     * Reverse logic to make it easier sometimes
-     * */
-
-    isPropagatingTo( emitter, event ) {
-        return emitter.isPropagatingFrom( this, event );
+export default class EventPropagator extends EventEmitter {
+    isPropagatingTo( target, event ) {
+        return isPropagatingTo( this, target, event );
     }
 
-    propagateTo( emitter, event, handler ) {
-        assert( emitter instanceof EventPropagator, 'emitter must be an EventPropagator instance.' );
-
-        emitter.propagateFrom( this, event, handler );
+    isPropagatingFrom( source, event ) {
+        return isPropagatingTo( source, this, event );
     }
 
-    isPropagatingEvents( emitter = null ) {
-        return this._propagateEvents;
+    propagateTo( target, event, onEvent, onlyOnce, context = this ) {
+        propagateTo( this, target, event, onEvent, onlyOnce, context );
+
+        return this;
+    }
+
+    stopPropagatingTo( target, event ) {
+        stopPropagatingTo( this, target, event );
+
+        return this;
+    }
+
+    propagateFrom( source, event, onEvent, onlyOnce, context = this ) {
+        propagateTo( source, this, event, onEvent, onlyOnce, context );
+
+        return this;
+    }
+
+    stopPropagatingFrom( source, event ) {
+        stopPropagatingTo( source, this, event );
+
+        return this;
     }
 }
