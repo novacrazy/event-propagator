@@ -7,8 +7,8 @@ import {EventEmitter} from 'events';
 import {ok as assert, strictEqual} from 'assert';
 
 export function isPropagatingTo( source, target, event ) {
-    assert( source instanceof EventEmitter, 'emitter must be an instance of EventEmitter' );
-    assert( target instanceof EventEmitter, 'emitter must be an instance of EventEmitter' );
+    assert( source instanceof EventEmitter, 'source must be an EventEmitter' );
+    assert( target instanceof EventEmitter, 'target must be an EventEmitter' );
 
     strictEqual( typeof event, 'string', 'event must be a string' );
 
@@ -63,8 +63,8 @@ export function propagateTo( source, target, event, onEvent = () => true, onlyOn
 }
 
 export function stopPropagatingTo( source, target, event ) {
-    assert( source instanceof EventEmitter, 'emitter must be an EventEmitter' );
-    assert( target instanceof EventEmitter, 'emitter must be an EventEmitter' );
+    assert( source instanceof EventEmitter, 'source must be an EventEmitter' );
+    assert( target instanceof EventEmitter, 'target must be an EventEmitter' );
 
     strictEqual( typeof event, 'string', 'event must be a string' );
 

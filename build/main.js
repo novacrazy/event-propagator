@@ -68,8 +68,8 @@ function _inherits( subClass, superClass ) {
 }
 
 function _isPropagatingTo( source, target, event ) {
-    (0, _assert.ok)( source instanceof _events.EventEmitter, 'emitter must be an instance of EventEmitter' );
-    (0, _assert.ok)( target instanceof _events.EventEmitter, 'emitter must be an instance of EventEmitter' );
+    (0, _assert.ok)( source instanceof _events.EventEmitter, 'source must be an EventEmitter' );
+    (0, _assert.ok)( target instanceof _events.EventEmitter, 'target must be an EventEmitter' );
 
     (0, _assert.strictEqual)( typeof event === 'undefined' ? 'undefined' : _typeof( event ), 'string',
         'event must be a string' );
@@ -159,8 +159,8 @@ function _propagateTo( source, target, event ) {
 
 exports.propagateTo = _propagateTo;
 function _stopPropagatingTo( source, target, event ) {
-    (0, _assert.ok)( source instanceof _events.EventEmitter, 'emitter must be an EventEmitter' );
-    (0, _assert.ok)( target instanceof _events.EventEmitter, 'emitter must be an EventEmitter' );
+    (0, _assert.ok)( source instanceof _events.EventEmitter, 'source must be an EventEmitter' );
+    (0, _assert.ok)( target instanceof _events.EventEmitter, 'target must be an EventEmitter' );
 
     (0, _assert.strictEqual)( typeof event === 'undefined' ? 'undefined' : _typeof( event ), 'string',
         'event must be a string' );
