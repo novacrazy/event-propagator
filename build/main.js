@@ -24,7 +24,8 @@
  ****/
 'use strict';
 
-exports.__esModule = true;
+exports.__esModule      = true;
+exports.EventPropagator = exports.stopPropagatingTo = exports.propagateTo = exports.isPropagatingTo = void 0;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function( obj ) {
     return typeof obj;
@@ -100,6 +101,7 @@ function _isPropagatingTo( source, target, event ) {
     return false;
 }
 
+exports.isPropagatingTo = _isPropagatingTo;
 function _propagateTo( source, target, event ) {
     var onEvent  = arguments.length <= 3 || arguments[3] === void 0 ? function() {
         return true;
@@ -155,6 +157,7 @@ function _propagateTo( source, target, event ) {
     }
 }
 
+exports.propagateTo = _propagateTo;
 function _stopPropagatingTo( source, target, event ) {
     (0, _assert.ok)( source instanceof _events.EventEmitter, 'emitter must be an EventEmitter' );
     (0, _assert.ok)( target instanceof _events.EventEmitter, 'emitter must be an EventEmitter' );
@@ -187,7 +190,9 @@ function _stopPropagatingTo( source, target, event ) {
     }
 }
 
-var EventPropagator = function( _EventEmitter ) {
+exports.stopPropagatingTo = _stopPropagatingTo;
+
+var EventPropagator = exports.EventPropagator = function( _EventEmitter ) {
     _inherits( EventPropagator, _EventEmitter );
 
     function EventPropagator() {
@@ -234,5 +239,3 @@ var EventPropagator = function( _EventEmitter ) {
 
     return EventPropagator;
 }( _events.EventEmitter );
-
-exports.default = EventPropagator;

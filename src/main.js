@@ -6,7 +6,7 @@ import {once} from 'lodash';
 import {EventEmitter} from 'events';
 import {ok as assert, strictEqual} from 'assert';
 
-function isPropagatingTo( source, target, event ) {
+export function isPropagatingTo( source, target, event ) {
     assert( source instanceof EventEmitter, 'emitter must be an instance of EventEmitter' );
     assert( target instanceof EventEmitter, 'emitter must be an instance of EventEmitter' );
 
@@ -21,7 +21,7 @@ function isPropagatingTo( source, target, event ) {
     return false;
 }
 
-function propagateTo( source, target, event, onEvent = () => true, onlyOnce = false, context ) {
+export function propagateTo( source, target, event, onEvent = () => true, onlyOnce = false, context ) {
     strictEqual( typeof onEvent, 'function', 'onEvent must be a function' );
 
     if( !isPropagatingTo( source, target, event ) ) {
@@ -62,7 +62,7 @@ function propagateTo( source, target, event, onEvent = () => true, onlyOnce = fa
     }
 }
 
-function stopPropagatingTo( source, target, event ) {
+export function stopPropagatingTo( source, target, event ) {
     assert( source instanceof EventEmitter, 'emitter must be an EventEmitter' );
     assert( target instanceof EventEmitter, 'emitter must be an EventEmitter' );
 
@@ -75,7 +75,7 @@ function stopPropagatingTo( source, target, event ) {
     }
 }
 
-export default class EventPropagator extends EventEmitter {
+export class EventPropagator extends EventEmitter {
     isPropagatingTo( target, event ) {
         return isPropagatingTo( this, target, event );
     }
