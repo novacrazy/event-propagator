@@ -26,6 +26,15 @@
 
 exports.__esModule = true;
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function( obj ) {
+    return typeof obj;
+} : function( obj ) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+};
+/**
+ * Created by Aaron on 6/27/2016.
+ */
+
 var _lodash = require( 'lodash' );
 
 var _events = require( 'events' );
@@ -56,15 +65,13 @@ function _inherits( subClass, superClass ) {
         subClass.__proto__ = superClass;
     }
 }
-/**
- * Created by Aaron on 6/27/2016.
- */
 
 function _isPropagatingTo( source, target, event ) {
     (0, _assert.ok)( source instanceof _events.EventEmitter, 'emitter must be an instance of EventEmitter' );
     (0, _assert.ok)( target instanceof _events.EventEmitter, 'emitter must be an instance of EventEmitter' );
 
-    (0, _assert.strictEqual)( typeof event, 'string', 'event must be a string' );
+    (0, _assert.strictEqual)( typeof event === 'undefined' ? 'undefined' : _typeof( event ), 'string',
+        'event must be a string' );
 
     for( var _iterator = source.listeners( event ), _isArray = Array.isArray(
         _iterator ), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator](); ; ) {
@@ -100,7 +107,8 @@ function _propagateTo( source, target, event ) {
     var onlyOnce = arguments.length <= 4 || arguments[4] === void 0 ? false : arguments[4];
     var context  = arguments[5];
 
-    (0, _assert.strictEqual)( typeof onEvent, 'function', 'onEvent must be a function' );
+    (0, _assert.strictEqual)( typeof onEvent === 'undefined' ? 'undefined' : _typeof( onEvent ), 'function',
+        'onEvent must be a function' );
 
     if( !_isPropagatingTo( source, target, event ) ) {
         var _listener;
@@ -151,7 +159,8 @@ function _stopPropagatingTo( source, target, event ) {
     (0, _assert.ok)( source instanceof _events.EventEmitter, 'emitter must be an EventEmitter' );
     (0, _assert.ok)( target instanceof _events.EventEmitter, 'emitter must be an EventEmitter' );
 
-    (0, _assert.strictEqual)( typeof event, 'string', 'event must be a string' );
+    (0, _assert.strictEqual)( typeof event === 'undefined' ? 'undefined' : _typeof( event ), 'string',
+        'event must be a string' );
 
     for( var _iterator2 = source.listeners( event ), _isArray2 = Array.isArray(
         _iterator2 ), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : _iterator2[Symbol.iterator](); ; ) {
