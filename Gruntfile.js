@@ -22,25 +22,12 @@ module.exports = function( grunt ) {
             },
             build:   {
                 options: {
+                    presets: [
+                        "es2015-loose"
+                    ],
                     plugins: [
                         ["transform-class-constructor-call", loose],
                         ["transform-class-properties", loose],
-                        ["transform-strict-mode", loose],
-                        ["transform-es2015-arrow-functions", loose],
-                        ["transform-es2015-block-scoped-functions", loose],
-                        ["transform-es2015-block-scoping", loose],
-                        ["transform-es2015-classes", loose],
-                        ["transform-es2015-computed-properties", loose],
-                        ["transform-es2015-destructuring", loose],
-                        ["transform-es2015-for-of", loose],
-                        ["transform-es2015-function-name", loose],
-                        ["transform-es2015-literals", loose],
-                        ["transform-es2015-modules-commonjs", loose],
-                        ["transform-es2015-object-super", loose],
-                        ["transform-es2015-parameters", loose],
-                        ["transform-es2015-shorthand-properties", loose],
-                        ["transform-es2015-spread", loose],
-                        ["transform-object-rest-spread", loose],
                         ["transform-undefined-to-void", loose]
                     ]
                 },
