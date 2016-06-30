@@ -6,7 +6,7 @@ import {once} from 'lodash';
 import {EventEmitter} from 'events';
 import {ok as assert, strictEqual} from 'assert';
 
-export function isPropagatingTo( source, target, event ) {
+export function isPropagating( source, target, event ) {
     assert( source instanceof EventEmitter, 'source must be an EventEmitter' );
     assert( target instanceof EventEmitter, 'target must be an EventEmitter' );
 
@@ -21,10 +21,10 @@ export function isPropagatingTo( source, target, event ) {
     return false;
 }
 
-export function propagateTo( source, target, event, onEvent = () => true, onlyOnce = false, context ) {
+export function propagate( source, target, event, onEvent = () => true, onlyOnce = false, context ) {
     strictEqual( typeof onEvent, 'function', 'onEvent must be a function' );
 
-    if( !isPropagatingTo( source, target, event ) ) {
+    if( !isPropagating( source, target, event ) ) {
         var listener;
 
         if( onlyOnce ) {
@@ -62,7 +62,7 @@ export function propagateTo( source, target, event, onEvent = () => true, onlyOn
     }
 }
 
-export function stopPropagatingTo( source, target, event ) {
+export function stopPropagating( source, target, event ) {
     assert( source instanceof EventEmitter, 'source must be an EventEmitter' );
     assert( target instanceof EventEmitter, 'target must be an EventEmitter' );
 
@@ -77,33 +77,33 @@ export function stopPropagatingTo( source, target, event ) {
 
 export class EventPropagator extends EventEmitter {
     isPropagatingTo( target, event ) {
-        return isPropagatingTo( this, target, event );
+        return isPropagating( this, target, event );
     }
 
     isPropagatingFrom( source, event ) {
-        return isPropagatingTo( source, this, event );
+        return isPropagating( source, this, event );
     }
 
     propagateTo( target, event, onEvent, onlyOnce, context = this ) {
-        propagateTo( this, target, event, onEvent, onlyOnce, context );
+        propagate( this, target, event, onEvent, onlyOnce, context );
 
         return this;
     }
 
     stopPropagatingTo( target, event ) {
-        stopPropagatingTo( this, target, event );
+        stopPropagating( this, target, event );
 
         return this;
     }
 
     propagateFrom( source, event, onEvent, onlyOnce, context = this ) {
-        propagateTo( source, this, event, onEvent, onlyOnce, context );
+        propagate( source, this, event, onEvent, onlyOnce, context );
 
         return this;
     }
 
     stopPropagatingFrom( source, event ) {
-        stopPropagatingTo( source, this, event );
+        stopPropagating( source, this, event );
 
         return this;
     }

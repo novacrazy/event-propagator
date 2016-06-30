@@ -25,7 +25,7 @@
 'use strict';
 
 exports.__esModule      = true;
-exports.EventPropagator = exports.stopPropagatingTo = exports.propagateTo = exports.isPropagatingTo = void 0;
+exports.EventPropagator = void 0;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function( obj ) {
     return typeof obj;
@@ -35,6 +35,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 /**
  * Created by Aaron on 6/27/2016.
  */
+
+exports.isPropagating = isPropagating;
+exports.propagate       = propagate;
+exports.stopPropagating = stopPropagating;
 
 var _lodash = require( 'lodash' );
 
@@ -67,7 +71,7 @@ function _inherits( subClass, superClass ) {
     }
 }
 
-function _isPropagatingTo( source, target, event ) {
+function isPropagating( source, target, event ) {
     (0, _assert.ok)( source instanceof _events.EventEmitter, 'source must be an EventEmitter' );
     (0, _assert.ok)( target instanceof _events.EventEmitter, 'target must be an EventEmitter' );
 
@@ -101,8 +105,7 @@ function _isPropagatingTo( source, target, event ) {
     return false;
 }
 
-exports.isPropagatingTo = _isPropagatingTo;
-function _propagateTo( source, target, event ) {
+function propagate( source, target, event ) {
     var onEvent  = arguments.length <= 3 || arguments[3] === void 0 ? function() {
         return true;
     } : arguments[3];
@@ -112,7 +115,7 @@ function _propagateTo( source, target, event ) {
     (0, _assert.strictEqual)( typeof onEvent === 'undefined' ? 'undefined' : _typeof( onEvent ), 'function',
         'onEvent must be a function' );
 
-    if( !_isPropagatingTo( source, target, event ) ) {
+    if( !isPropagating( source, target, event ) ) {
         var _listener;
 
         if( onlyOnce ) {
@@ -157,8 +160,7 @@ function _propagateTo( source, target, event ) {
     }
 }
 
-exports.propagateTo = _propagateTo;
-function _stopPropagatingTo( source, target, event ) {
+function stopPropagating( source, target, event ) {
     (0, _assert.ok)( source instanceof _events.EventEmitter, 'source must be an EventEmitter' );
     (0, _assert.ok)( target instanceof _events.EventEmitter, 'target must be an EventEmitter' );
 
@@ -190,8 +192,6 @@ function _stopPropagatingTo( source, target, event ) {
     }
 }
 
-exports.stopPropagatingTo = _stopPropagatingTo;
-
 var EventPropagator = exports.EventPropagator = function( _EventEmitter ) {
     _inherits( EventPropagator, _EventEmitter );
 
@@ -202,23 +202,23 @@ var EventPropagator = exports.EventPropagator = function( _EventEmitter ) {
     }
 
     EventPropagator.prototype.isPropagatingTo = function isPropagatingTo( target, event ) {
-        return _isPropagatingTo( this, target, event );
+        return isPropagating( this, target, event );
     };
 
     EventPropagator.prototype.isPropagatingFrom = function isPropagatingFrom( source, event ) {
-        return _isPropagatingTo( source, this, event );
+        return isPropagating( source, this, event );
     };
 
     EventPropagator.prototype.propagateTo = function propagateTo( target, event, onEvent, onlyOnce ) {
         var context = arguments.length <= 4 || arguments[4] === void 0 ? this : arguments[4];
 
-        _propagateTo( this, target, event, onEvent, onlyOnce, context );
+        propagate( this, target, event, onEvent, onlyOnce, context );
 
         return this;
     };
 
     EventPropagator.prototype.stopPropagatingTo = function stopPropagatingTo( target, event ) {
-        _stopPropagatingTo( this, target, event );
+        stopPropagating( this, target, event );
 
         return this;
     };
@@ -226,13 +226,13 @@ var EventPropagator = exports.EventPropagator = function( _EventEmitter ) {
     EventPropagator.prototype.propagateFrom = function propagateFrom( source, event, onEvent, onlyOnce ) {
         var context = arguments.length <= 4 || arguments[4] === void 0 ? this : arguments[4];
 
-        _propagateTo( source, this, event, onEvent, onlyOnce, context );
+        propagate( source, this, event, onEvent, onlyOnce, context );
 
         return this;
     };
 
     EventPropagator.prototype.stopPropagatingFrom = function stopPropagatingFrom( source, event ) {
-        _stopPropagatingTo( source, this, event );
+        stopPropagating( source, this, event );
 
         return this;
     };
