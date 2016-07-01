@@ -70,7 +70,7 @@ export function stopPropagating( source, target, event ) {
 
     for( let listener of source.listeners( event ) ) {
         if( listener.__target__ === target && listener.__source__ === source ) {
-            source.removeListener( listener );
+            source.removeListener( event, listener );
         }
     }
 }

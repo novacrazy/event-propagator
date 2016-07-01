@@ -187,8 +187,7 @@ function stopPropagating( source, target, event ) {
         var listener = _ref2;
 
         if( listener.__target__ === target && listener.__source__ === source ) {
-            console.log( typeof listener === 'undefined' ? 'undefined' : _typeof( listener ) );
-            source.removeListener( listener );
+            source.removeListener( event, listener );
         }
     }
 }
