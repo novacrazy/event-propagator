@@ -15,6 +15,8 @@ var _ = require( '../../' );
 
 var _assert = require( 'assert' );
 
+var asyncTimeout = 200;
+
 describe( 'Basic tests', function() {
     it( 'Existence', function() {
         (0, _assert.strictEqual)( typeof _.EventPropagator === 'undefined' ? 'undefined' : _typeof( _.EventPropagator ),
@@ -72,6 +74,117 @@ describe( "Propagation", function() {
 
         source.emit( event );
 
-        setTimeout( done, 200 );
+        setTimeout( function() {
+            try {
+                (0, _assert.ok)( !(0, _.isPropagating)( source, target, event ),
+                    "The listener should have been removed" );
+
+                done();
+            } catch( err ) {
+                done( err );
+            }
+        }, asyncTimeout );
+    } );
+
+    it( "should allow a single propagation", function( done ) {
+        (0, _.propagate)( source, target, onceEvent, void 0, true );
+
+        (0, _assert.ok)( (0, _.isPropagating)( source, target, onceEvent ), "propagator not added" );
+        (0, _assert.ok)( !(0, _.isPropagating)( target, source, onceEvent ), "propagator added to wrong emitter" );
+
+        var count = 0;
+
+        target.on( onceEvent, function() {
+            count++;
+        } );
+
+        setTimeout( function() {
+            if( count === 1 ) {
+                done();
+            } else {
+                done( new Error( "Invalid number of events received" ) );
+            }
+        }, asyncTimeout );
+
+        source.emit( onceEvent );
+
+        //Then these are ignored since the listener was removed
+        source.emit( onceEvent );
+        source.emit( onceEvent );
+    } );
+
+    describe( "Custom middle callbacks", function() {
+        var callbackEvent  = "callbackEvent";
+        var callbackEvent2 = "callbackEvent2";
+        var callbackEvent3 = "callbackEvent3";
+
+        it( "should invoke callbacks if given", function( done ) {
+            var didCall = false;
+
+            function callback( value ) {
+                (0, _assert.strictEqual)( value, 42 );
+                didCall = true;
+            }
+
+            (0, _.propagate)( source, target, callbackEvent, callback, true );
+
+            setTimeout( function() {
+                if( didCall ) {
+                    done();
+                } else {
+                    done( new Error( "Invalid number of events received" ) );
+                }
+            }, asyncTimeout );
+
+            source.emit( callbackEvent, 42 );
+        } );
+
+        it( "should allow cancelling the event propagation", function( done ) {
+            var didCall = false;
+
+            function callback( value ) {
+                (0, _assert.strictEqual)( value, 42 );
+                return false;
+            }
+
+            (0, _.propagate)( source, target, callbackEvent2, callback, true );
+
+            target.once( callbackEvent2, function() {
+                didCall = true;
+            } );
+
+            setTimeout( function() {
+                //Notice the reversed logic
+                if( !didCall ) {
+                    done();
+                } else {
+                    done( new Error( "Invalid number of events received" ) );
+                }
+            }, asyncTimeout );
+
+            source.emit( callbackEvent2, 42 );
+        } );
+
+        it( "should allow custom contexts for the middle callbacks to be invoked with", function( done ) {
+            var didCall = false;
+            var context = {};
+
+            function callback() {
+                (0, _assert.strictEqual)( this, context );
+                didCall = true;
+            }
+
+            (0, _.propagate)( source, target, callbackEvent3, callback, true, context );
+
+            setTimeout( function() {
+                if( didCall ) {
+                    done();
+                } else {
+                    done( new Error( "Invalid number of events received" ) );
+                }
+            }, asyncTimeout );
+
+            source.emit( callbackEvent3 );
+        } );
     } );
 } );
