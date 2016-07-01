@@ -39,7 +39,7 @@ export function propagate( source, target, event, onEvent = () => true, onlyOnce
                     listener.__active__ = false;
                 }
 
-                target.removeListener( event, listener );
+                source.removeListener( event, listener );
             } );
 
         } else {
@@ -55,10 +55,10 @@ export function propagate( source, target, event, onEvent = () => true, onlyOnce
         }
 
         listener.__target__ = target;
-        listener.__source__ = target;
+        listener.__source__ = source;
         listener.__active__ = true;
 
-        target.addListener( event, listener );
+        source.addListener( event, listener );
     }
 }
 

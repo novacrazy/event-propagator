@@ -134,7 +134,7 @@ function propagate( source, target, event ) {
                     _listener.__active__ = false;
                 }
 
-                target.removeListener( event, _listener );
+                source.removeListener( event, _listener );
             } );
         } else {
             _listener = function listener() {
@@ -153,10 +153,10 @@ function propagate( source, target, event ) {
         }
 
         _listener.__target__ = target;
-        _listener.__source__ = target;
+        _listener.__source__ = source;
         _listener.__active__ = true;
 
-        target.addListener( event, _listener );
+        source.addListener( event, _listener );
     }
 }
 
@@ -187,6 +187,7 @@ function stopPropagating( source, target, event ) {
         var listener = _ref2;
 
         if( listener.__target__ === target && listener.__source__ === source ) {
+            console.log( typeof listener === 'undefined' ? 'undefined' : _typeof( listener ) );
             source.removeListener( listener );
         }
     }
