@@ -1,6 +1,6 @@
 {
   "name":            "event-propagator",
-  "version":         "0.0.2",
+  "version":         "1.0.0",
   "description":     "event-propagator is an extension of the EventEmitter class that will forward specified events to another EventEmitter.",
   "main":            "index.js",
   "keywords":        [
