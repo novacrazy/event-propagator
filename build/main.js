@@ -41,11 +41,11 @@ exports.propagateOnce   = propagateOnce;
 exports.propagate       = propagate;
 exports.stopPropagating = stopPropagating;
 
-var _lodash = require( 'lodash' );
-
 var _events = require( 'events' );
 
 var _assert = require( 'assert' );
+
+var _once = require( './once.js' );
 
 function _classCallCheck( instance, Constructor ) {
     if( !(instance instanceof Constructor) ) {
@@ -131,7 +131,7 @@ function propagate( source, target, event ) {
         var _listener;
 
         if( onlyOnce ) {
-            _listener = (0, _lodash.once)( function() {
+            _listener = (0, _once.once)( function() {
                 for( var _len = arguments.length, args = Array( _len ), _key = 0; _key < _len; _key++ ) {
                     args[_key] = arguments[_key];
                 }

@@ -2,9 +2,10 @@
  * Created by Aaron on 6/27/2016.
  */
 
-import {once} from 'lodash';
 import {EventEmitter} from 'events';
 import {ok as assert, strictEqual, notStrictEqual} from 'assert';
+
+import {once} from './once.js';
 
 export function isPropagating( source, target, event ) {
     assert( source instanceof EventEmitter, 'source must be an EventEmitter' );

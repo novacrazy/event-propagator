@@ -34,6 +34,5 @@
     "test":  "npm run build && mocha -b test/build"
   },
   "dependencies":    {
-    "lodash": "^4.13.1"
   }
 }
