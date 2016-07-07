@@ -4,7 +4,7 @@
 
 import {once} from 'lodash';
 import {EventEmitter} from 'events';
-import {ok as assert, strictEqual} from 'assert';
+import {ok as assert, strictEqual, notStrictEqual} from 'assert';
 
 export function isPropagating( source, target, event ) {
     assert( source instanceof EventEmitter, 'source must be an EventEmitter' );
@@ -21,7 +21,13 @@ export function isPropagating( source, target, event ) {
     return false;
 }
 
+export function propagateOnce( source, target, event, onEvent = () => true, context ) {
+    return propagate( source, target, event, onEvent, true, context );
+}
+
 export function propagate( source, target, event, onEvent = () => true, onlyOnce = false, context ) {
+    notStrictEqual( source, target, 'Cannot propagate events to self.' );
+
     strictEqual( typeof onEvent, 'function', 'onEvent must be a function' );
 
     if( !isPropagating( source, target, event ) ) {

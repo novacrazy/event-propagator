@@ -37,6 +37,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
  */
 
 exports.isPropagating = isPropagating;
+exports.propagateOnce   = propagateOnce;
 exports.propagate       = propagate;
 exports.stopPropagating = stopPropagating;
 
@@ -105,12 +106,23 @@ function isPropagating( source, target, event ) {
     return false;
 }
 
+function propagateOnce( source, target, event ) {
+    var onEvent = arguments.length <= 3 || arguments[3] === void 0 ? function() {
+        return true;
+    } : arguments[3];
+    var context = arguments[4];
+
+    return propagate( source, target, event, onEvent, true, context );
+}
+
 function propagate( source, target, event ) {
     var onEvent  = arguments.length <= 3 || arguments[3] === void 0 ? function() {
         return true;
     } : arguments[3];
     var onlyOnce = arguments.length <= 4 || arguments[4] === void 0 ? false : arguments[4];
     var context  = arguments[5];
+
+    (0, _assert.notStrictEqual)( source, target, 'Cannot propagate events to self.' );
 
     (0, _assert.strictEqual)( typeof onEvent === 'undefined' ? 'undefined' : _typeof( onEvent ), 'function',
         'onEvent must be a function' );
