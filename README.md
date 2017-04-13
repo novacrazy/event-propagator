@@ -1,6 +1,8 @@
 event-propagator
 ================
 
+### This project is defunct and outdated. I would not recommend using it, but feel free to browse the code and steal anything useful.
+
 This is a small module that provides functions and an extension to the EventEmitter class to provide mechanisms of forwarding events from one emitter to another.
 
 ## Quickstart
